@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numerology Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px gray;
+            width: 40%;
+            margin: auto;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            width: 80%;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e3e3e3;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Numerology Prediction</h2>
+        <input type="text" id="name" placeholder="Enter your name" required>
+        <input type="date" id="dob" required>
+        <button onclick="getPrediction()">Get Prediction</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        async function getPrediction() {
+            const name = document.getElementById("name").value;
+            const dob = document.getElementById("dob").value;
+            const resultDiv = document.getElementById("result");
+            
+            if (!name || !dob) {
+                resultDiv.innerHTML = "Please enter both name and date of birth.";
+                return;
+            }
+            
+            const apiUrl = "http://localhost:3040/api/numerology"; // Adjust API endpoint as needed
+            
+            const requestData = {
+                name: name,
+                dob: dob
+            };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const data = await response.json();
+                
+                if (data && data.prediction) {
+                    resultDiv.innerHTML = `<strong>Personality Traits:</strong> ${data.prediction}`;
+                } else {
+                    resultDiv.innerHTML = "Error: Unable to fetch prediction.";
+                }
+            } catch (error) {
+                resultDiv.innerHTML = "Error: Unable to connect to the API.";
+            }
+        }
+    </script>
+</body>
+</html>
